@@ -58,7 +58,7 @@ int cd_spatial_inertia_from_com(double inertia[6][6], double mass, double com[3]
 int cd_spatial_inertia_to_com(double inertia[6][6], double * massp, double com[3], double Icom[3][3]);
 int cd_spatial_inertia_sphere_solid(double pos[3], double mass, double radius, double inertia[6][6]);
 
-int cd_spatial_vxIv(double v[6], double I[6][6], double result[6]);
+int cd_spatial_vxIv(double v[6], double i[6][6], double result[6]);
 
 int cd_spatial_spring_damper(double pose[7], double vel[6],
    double pose_ref[7], double vel_ref[6], double force[6],

@@ -27,6 +27,8 @@
  *  - openrave/openrave.h
  * */
 
+#include <openrave/openrave.h>
+
 namespace orcdchomp
 {
 

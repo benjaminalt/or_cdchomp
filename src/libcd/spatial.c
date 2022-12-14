@@ -470,11 +470,11 @@ int cd_spatial_inertia_sphere_solid(double pos[3], double mass, double radius, d
    return cd_spatial_inertia_from_com(inertia, mass, pos, Icom);
 }
 
-int cd_spatial_vxIv(double v[6], double I[6][6], double result[6])
+int cd_spatial_vxIv(double v[6], double i[6][6], double result[6])
 {
    double Iv[6];
    cblas_dgemv(CblasRowMajor, CblasNoTrans, 6, 6,
-      1.0, &I[0][0],6, v,1, 0.0,Iv,1);
+      1.0, &i[0][0],6, v,1, 0.0,Iv,1);
    cd_mat_cross(v, Iv, result);
    cd_mat_cross(v+3, Iv+3, result);
    cd_mat_cross(v, Iv+3, result+3);

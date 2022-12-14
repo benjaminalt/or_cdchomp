@@ -4,10 +4,16 @@ find_package(catkin REQUIRED COMPONENTS openrave_catkin)
 catkin_package()
 catkin_python_setup()
 
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
+find_package(Boost REQUIRED COMPONENTS system)
+# find_package(OpenBLAS REQUIRED)
 
-find_package(OpenRAVE REQUIRED)
-include_directories(${catkin_INCLUDE_DIRS})
+# SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
+
+include_directories(
+    ${catkin_INCLUDE_DIRS}
+    ${Boost_INCLUDE_DIRS}
+    # ${OpenBLAS_INCLUDE_DIRS}
+)
 
 openrave_plugin("${PROJECT_NAME}_plugin"
     src/orcdchomp.cpp
@@ -24,10 +30,20 @@ openrave_plugin("${PROJECT_NAME}_plugin"
     src/libcd/util.c
     src/libcd/util_shparse.c
 )
+
+set(CMAKE_SHARED_LINKER_FLAGS "-Wl,--no-undefined ${CMAKE_SHARED_LINKER_FLAGS}")  
+
 target_link_libraries("${PROJECT_NAME}_plugin"
-    blas
+    # ${OpenBLAS_LIBRARIES}
+    # gslcblas
+    # blas
+    cblas
+    # f77blas
+    # atlas
+    log4cxx
     lapacke
     lapack
     gsl
     ${catkin_LIBRARIES}
+    ${Boost_LIBRARIES}
 )

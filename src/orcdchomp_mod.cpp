@@ -24,9 +24,9 @@
  */
 
 #include <time.h>
-#include <cblas.h>
 
 extern "C" {
+#include <cblas.h>
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_randist.h>
 #include "libcd/chomp.h"
@@ -419,7 +419,7 @@ int mod::computedistancefield(int argc, char * argv[], std::ostream& sout)
       RAVELOG_INFO("Reading SDF data for KinBody '%s' from file %s ...\n",
          kinbody->GetName().c_str(), cache_filename);
       fp = fopen(cache_filename, "rb");
-      if (!fp) { RAVELOG_ERROR("could not read from file!\n"); break; }
+      if (!fp) { RAVELOG_WARN("could not read from file!\n"); break; }
       
       /* check file size */
       fseek(fp, 0L, SEEK_END);
@@ -442,6 +442,8 @@ int mod::computedistancefield(int argc, char * argv[], std::ostream& sout)
       fclose(fp);
       sdf_data_loaded = 1;
    } while (0);
+
+   RAVELOG_INFO("Continuiong without cache file");
    
    if (!sdf_data_loaded)
    {
@@ -550,7 +552,7 @@ int mod::computedistancefield(int argc, char * argv[], std::ostream& sout)
       /* stop timing flood fill computation */
       clock_gettime(CLOCK_THREAD_CPUTIME_ID, &ticks_toc);
       CD_OS_TIMESPEC_SUB(&ticks_toc, &ticks_tic);
-      RAVELOG_DEBUG("total flood fill computation time: %f seconds.\n", CD_OS_TIMESPEC_DOUBLE(&ticks_toc));
+      RAVELOG_INFO("total flood fill computation time: %f seconds.\n", CD_OS_TIMESPEC_DOUBLE(&ticks_toc));
 
       /* start timing sdf computation */
       clock_gettime(CLOCK_THREAD_CPUTIME_ID, &ticks_tic);
@@ -562,7 +564,7 @@ int mod::computedistancefield(int argc, char * argv[], std::ostream& sout)
       /* stop timing sdf computation */
       clock_gettime(CLOCK_THREAD_CPUTIME_ID, &ticks_toc);
       CD_OS_TIMESPEC_SUB(&ticks_toc, &ticks_tic);
-      RAVELOG_DEBUG("total sdf computation time: %f seconds.\n", CD_OS_TIMESPEC_DOUBLE(&ticks_toc));
+      RAVELOG_INFO("total sdf computation time: %f seconds.\n", CD_OS_TIMESPEC_DOUBLE(&ticks_toc));
 
       /* we no longer need the obstacle grid */
       cd_grid_destroy(g_obs);
@@ -580,10 +582,14 @@ int mod::computedistancefield(int argc, char * argv[], std::ostream& sout)
       }
    }
    
+   RAVELOG_INFO("Done writing sdf data to file");
+
    /* allocate a new sdf struct, and copy the new one there! */
    this->sdfs = (struct sdf *) realloc(this->sdfs, (this->n_sdfs+1)*sizeof(struct sdf));
    this->sdfs[this->n_sdfs] = sdf_new;
    this->n_sdfs++;
+
+   RAVELOG_INFO("orcdchomp::computedistancefield: Exit");
    
    return 0;
 }
